@@ -270,7 +270,19 @@
 </div>
 
 <script>
-    const SERVER_URL = 'http://localhost:3000/api/ads';
+     // Данные для отображения
+let adsList = [
+    {id: 1, title: "iPhone 13 Pro Max", price: "250 000 ₸", category: "Электроника", desc: "В идеальном состоянии, полный комплект.", phone: "77071234567", img: "https://picsum.photos/400/300"},
+    {id: 2, title: "Аренда авто", price: "15 000 ₸", category: "Транспорт", desc: "Сдам авто на сутки.", phone: "77071234567", img: "https://picsum.photos/400/301"},
+    {id: 3, title: "Услуги сантехника", price: "3 000 ₸", category: "Услуги", desc: "Быстро и качественно.", phone: "77071234567", img: "https://picsum.photos/400/302"}
+];
+
+// В функции loadData() удали всё содержимое и просто вызови фильтрацию:
+function loadData() {
+    filterAds();
+}
+
+
     
     // Структурированный каталог категорий
     const categories = ["Все", "Электроника", "Транспорт", "Недвижимость", "Услуги", "Дом и сад"];
