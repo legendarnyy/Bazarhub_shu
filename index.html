@@ -3,456 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BazarHub Шу — Современная доска объявлений</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>BazarHub Шу</title>
     <style>
-        :root {
-            --primary: #002f34;
-            --accent: #00e0ff;
-            --bg: #f2f4f5;
-            --text: #002f34;
-            --muted: #7f9799;
-            --border: #d8dfe0;
-            --white: #ffffff;
-            --whatsapp: #25d366;
-            --heart: #ff5636;
-        }
-
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 60px; }
-
-        /* ШАПКА САЙТА */
-        header {
-            background: var(--primary);
-            padding: 14px 16px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .logo { font-size: 22px; font-weight: 800; color: var(--white); text-decoration: none; }
-        .logo span { color: var(--accent); }
-        
-        .btn-post {
-            background: var(--accent);
-            color: var(--primary);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        /* ПОИСКОВАЯ СТРОКА */
-        .search-box {
-            background: var(--white);
-            border-radius: 24px;
-            padding: 6px 16px;
-            display: flex;
-            align-items: center;
-        }
-        .search-box input {
-            width: 100%;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            color: var(--text);
-        }
-
-        /* КАТЕГОРИИ (Горизонтальный скролл для мобилок) */
-        .categories-scroll {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 12px 16px;
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-        }
-        .categories-scroll::-webkit-scrollbar { display: none; }
-        .cat-chip {
-            background: var(--bg);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid transparent;
-        }
-        .cat-chip.active {
-            background: var(--primary);
-            color: var(--white);
-            border-color: var(--primary);
-        }
-
-        /* СЕТКА ОБЪЯВЛЕНИЙ */
-        .container { padding: 16px; max-width: 1200px; margin: 0 auto; }
-        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
-        
-        .ads-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-            gap: 12px;
-        }
-
-        /* КАРТОЧКА ТОВАРА */
-        .ad-card {
-            background: var(--white);
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #eef1f2;
-            position: relative;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-        .img-box { width: 100%; height: 120px; position: relative; background: #eef1f2; }
-        .ad-img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .fav-btn {
-            position: absolute; top: 8px; right: 8px;
-            background: var(--white); border: none;
-            width: 28px; height: 28px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; color: #babcbe; cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-        .fav-btn.active { color: var(--heart); }
-
-        .ad-body { padding: 10px; display: flex; flex-direction: column; flex: 1; }
-        .ad-price { font-size: 16px; font-weight: 800; margin-bottom: 4px; color: var(--primary); }
-        .ad-title { font-size: 13px; font-weight: 500; line-height: 1.3; margin-bottom: 6px; height: 34px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .ad-meta { font-size: 11px; color: var(--muted); margin-top: auto; display: flex; justify-content: space-between; padding-bottom: 8px; }
-        
-        .btn-wa {
-            display: flex; align-items: center; justify-content: center;
-            background: var(--whatsapp); color: var(--white);
-            text-decoration: none; padding: 8px; border-radius: 8px;
-            font-weight: 700; font-size: 12px; text-align: center;
-            gap: 6px; box-shadow: 0 2px 5px rgba(37, 211, 102, 0.2);
-        }
-
-        /* СТРАНИЦЫ (SPA) */
-        .page { display: none; }
-        .page.active { display: block; }
-
-        /* НИЖНЕЕ МЕНЮ (НАВИГАЦИЯ ДЛЯ ТЕЛЕФОНА) */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--white); height: 56px;
-            display: flex; justify-content: space-around; align-items: center;
-            border-top: 1px solid var(--border); z-index: 100;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: var(--muted); text-decoration: none; font-size: 11px;
-            font-weight: 500; cursor: pointer;
-        }
-        .nav-item span { font-size: 20px; margin-bottom: 2px; }
-        .nav-item.active { color: var(--primary); font-weight: 700; }
-
-        /* МОДАЛЬНОЕ ОКНО ФОРМЫ */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); z-index: 200;
-            justify-content: center; align-items: flex-end; /* Появляется снизу, как на мобилках */
-            backdrop-filter: blur(2px);
-        }
-        .modal-content {
-            background: var(--white); width: 100%; max-width: 500px;
-            border-radius: 20px 20px 0 0; padding: 24px 20px;
-            max-height: 85vh; overflow-y: auto;
-        }
-        .modal-content h3 { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--primary); }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 10px 14px; border: 1px solid var(--border);
-            border-radius: 8px; font-size: 14px; outline: none;
-        }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .modal-actions button { flex: 1; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; border: none; cursor: pointer; }
-        .btn-cancel { background: var(--bg); color: var(--text); }
-        .btn-save { background: var(--primary); color: var(--white); }
-
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
-
-        /* Для планшетов и ПК */
-        @media (min-width: 768px) {
-            .ads-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-            .modal { align-items: center; }
-            .modal-content { border-radius: 16px; }
-        }
+        :root { --primary: #002f34; --accent: #00e0ff; --bg: #f2f4f5; --white: #ffffff; }
+        body { font-family: sans-serif; margin: 0; background: var(--bg); }
+        header { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-post { background: var(--accent); border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; padding: 15px; }
+        .ad-card { background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .ad-img { width: 100%; height: 100px; object-fit: cover; border-radius: 5px; }
+        .wa-btn { display: block; text-align: center; background: #25d366; color: white; text-decoration: none; padding: 8px; border-radius: 5px; margin-top: 10px; font-size: 12px; font-weight: bold; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 20px; width: 90%; max-width: 400px; border-radius: 10px; }
+        input, textarea { width: 100%; margin: 5px 0 15px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-<!-- ХЕДЕР И ПОИСК -->
 <header>
-    <div class="header-top">
-        <a class="logo" onclick="switchPage('home')">Bazar<span>Hub</span></a>
-        <button class="btn-post" onclick="openModal()">+ Подать</button>
-    </div>
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Поиск объявлений в Шу..." oninput="filterAds()">
-    </div>
+    <strong>BazarHub Шу</strong>
+    <button class="btn-post" onclick="document.getElementById('modal').style.display='flex'">+ Подать</button>
 </header>
 
-<!-- ЛЕНТА КАТЕГОРИЙ -->
-<div class="categories-scroll" id="categoriesContainer"></div>
+<div class="ads-grid" id="adsContainer"></div>
 
-<!-- ГЛАВНЫЙ КОНТЕНТ -->
-<div class="container">
-    
-    <!-- СТРАНИЦА: ГЛАВНАЯ -->
-    <div id="page-home" class="page active">
-        <h3 class="section-title" id="gridTitle">Свежие объявления в Шу</h3>
-        <div class="ads-grid" id="adsContainer"></div>
-    </div>
-
-    <!-- СТРАНИЦА: ИЗБРАННОЕ -->
-    <div id="page-favs" class="page">
-        <h3 class="section-title">Избранные объявления ⭐</h3>
-        <div class="ads-grid" id="favsContainer"></div>
-    </div>
-
-    <!-- СТРАНИЦА: СООБЩЕНИЯ -->
-    <div id="page-chats" class="page">
-        <div class="empty-state">
-            <h2>Мои чаты 💬</h2>
-            <p style="margin-top:8px;">Здесь будут отображаться ваши переписки с покупателями.</p>
-        </div>
-    </div>
-
-</div>
-
-<!-- НИЖНЯЯ МОБИЛЬНАЯ НАВИГАЦИЯ -->
-<div class="bottom-nav">
-    <div class="nav-item active" id="btn-home" onclick="switchPage('home')"><span>📋</span>Лента</div>
-    <div class="nav-item" id="btn-favs" onclick="switchPage('favs')"><span>⭐</span>Избранное</div>
-    <div class="nav-item" id="btn-chats" onclick="switchPage('chats')"><span>💬</span>Чаты</div>
-</div>
-
-<!-- МОДАЛКА ПОДАЧИ ОБЪЯВЛЕНИЯ -->
-<div class="modal" id="adModal">
+<div id="modal" class="modal">
     <div class="modal-content">
-        <h3>Подать объявление</h3>
-        <form id="adForm" onsubmit="submitAd(event)">
-            <div class="form-group">
-                <label>Название товара или услуги</label>
-                <input type="text" id="formTitle" required placeholder="Например: iPhone 13 Pro Max">
-            </div>
-            <div class="form-group">
-                <label>Категория</label>
-                <select id="formCat" required></select>
-            </div>
-            <div class="form-group">
-                <label>Цена (в тенге)</label>
-                <input type="number" id="formPrice" required placeholder="Например: 250000">
-            </div>
-            <div class="form-group">
-                <label>Номер телефона для WhatsApp</label>
-                <input type="tel" id="formPhone" required placeholder="Например: 77071234567" value="77071234567">
-            </div>
-            <div class="form-group">
-                <label>Описание</label>
-                <textarea id="formDesc" rows="4" required placeholder="Опишите состояние, комплектацию..."></textarea>
-            </div>
-            <div class="modal-actions">
-                <button type="button" class="btn-cancel" onclick="closeModal()">Отмена</button>
-                <button type="submit" class="btn-save">Опубликовать</button>
-            </div>
-        </form>
+        <h3>Новое объявление</h3>
+        <input type="text" id="title" placeholder="Название">
+        <input type="text" id="price" placeholder="Цена (тг)">
+        <textarea id="desc" placeholder="Описание"></textarea>
+        <button onclick="saveAd()" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; border-radius:5px;">Опубликовать</button>
+        <button onclick="document.getElementById('modal').style.display='none'" style="width:100%; padding:10px; margin-top:10px; border:none; background:#eee;">Закрыть</button>
     </div>
 </div>
 
 <script>
-     // // Используем локальные данные, пока не настроим Google Таблицы
-let adsList = [
-    {id: 101, title: "iPhone 13 Pro Max", price: "250 000 ₸", category: "Электроника", desc: "В идеальном состоянии, полный комплект.", phone: "77071234567", img: "https://picsum.photos/400/300"},
-    {id: 102, title: "Аренда авто в Шу", price: "15 000 ₸", category: "Транспорт", desc: "Сдам авто на сутки, есть кондиционер.", phone: "77071234567", img: "https://picsum.photos/400/301"},
-    {id: 103, title: "Услуги сантехника", price: "3 000 ₸", category: "Услуги", desc: "Ремонт труб, кранов, выезд в любую точку города.", phone: "77071234567", img: "https://picsum.photos/400/302"}
-];
+    // База данных прямо в коде
+    let ads = [
+        {id: 1, title: "iPhone 13", price: "250 000 ₸", desc: "В идеале", phone: "77071234567", img: "https://picsum.photos/200/200?1"},
+        {id: 2, title: "Аренда авто", price: "15 000 ₸", desc: "На сутки", phone: "77071234567", img: "https://picsum.photos/200/200?2"}
+    ];
 
-// Функция подмены, чтобы сайт думал, что данные пришли из сети
-async function loadData() {
-    filterAds();
-}
- для отображения
-let adsList = [
-    {id: 1, title: "iPhone 13 Pro Max", price: "250 000 ₸", category: "Электроника", desc: "В идеальном состоянии, полный комплект.", phone: "77071234567", img: "https://picsum.photos/400/300"},
-    {id: 2, title: "Аренда авто", price: "15 000 ₸", category: "Транспорт", desc: "Сдам авто на сутки.", phone: "77071234567", img: "https://picsum.photos/400/301"},
-    {id: 3, title: "Услуги сантехника", price: "3 000 ₸", category: "Услуги", desc: "Быстро и качественно.", phone: "77071234567", img: "https://picsum.photos/400/302"}
-];
-
-// В функции loadData() удали всё содержимое и просто вызови фильтрацию:
-function loadData() {
-    filterAds();
-}
-
-
-    
-    // Структурированный каталог категорий
-    const categories = ["Все", "Электроника", "Транспорт", "Недвижимость", "Услуги", "Дом и сад"];
-
-    let adsList = [];
-    let favorites = JSON.parse(localStorage.getItem('bhub_favorites')) || [];
-    let selectedCategory = "Все";
-
-    // ЗАГРУЗКА ДАННЫХ С TERMUX СЕРВЕРА
-    async function loadData() {
-        try {
-            const res = await fetch(SERVER_URL);
-            adsList = await res.json();
-            filterAds();
-        } catch (e) {
-            console.error(e);
-            alert("Ошибка: Проверь, запущен ли бэкенд-сервер в Termux (node parser.js)");
-        }
-    }
-
-    // НАВИГАЦИЯ SPA (ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ БЕЗ ПЕРЕЗАГРУЗКИ)
-    function switchPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-        document.getElementById(`page-${pageId}`).classList.add('active');
-        document.getElementById(`btn-${pageId}`).classList.add('active');
-
-        if(pageId === 'favs') renderFavorites();
-        if(pageId === 'home') { selectedCategory = "Все"; buildCategoryChips(); filterAds(); }
-    }
-
-    // ПОСТРОЕНИЕ ЛЕНТЫ КАТЕГОРИЙ-ЧИПСОВ
-    function buildCategoryChips() {
-        const container = document.getElementById('categoriesContainer');
-        container.innerHTML = categories.map(cat => `
-            <div class="cat-chip ${selectedCategory === cat ? 'active' : ''}" onclick="selectCategory('${cat}')">
-                ${cat === 'Все' ? '⚡ ' : ''}${cat}
+    function render() {
+        const container = document.getElementById('adsContainer');
+        container.innerHTML = ads.map(ad => `
+            <div class="ad-card">
+                <img src="${ad.img}" class="ad-img">
+                <h4 style="margin: 10px 0 5px 0;">${ad.title}</h4>
+                <p style="color:red; font-weight:bold;">${ad.price}</p>
+                <a href="https://wa.me/${ad.phone}?text=Здравствуйте, по объявлению: ${ad.title}" class="wa-btn">WhatsApp</a>
             </div>
         `).join('');
     }
 
-    function selectCategory(cat) {
-        selectedCategory = cat;
-        buildCategoryChips();
-        document.getElementById('gridTitle').innerText = cat === "Все" ? "Свежие объявления в Шу" : `Категория: ${cat}`;
-        filterAds();
-    }
-
-    // ФИЛЬТРАЦИЯ И ВЫВОД ОБЪЯВЛЕНИЙ
-    function filterAds() {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    function saveAd() {
+        const title = document.getElementById('title').value;
+        const price = document.getElementById('price').value;
+        const desc = document.getElementById('desc').value;
         
-        const filtered = adsList.filter(ad => {
-            const matchesCategory = (selectedCategory === "Все" || ad.category === selectedCategory);
-            const matchesSearch = ad.title.toLowerCase().includes(searchInput) || ad.desc.toLowerCase().includes(searchInput);
-            return matchesCategory && matchesSearch;
-        });
-
-        renderGrid(filtered, 'adsContainer');
-    }
-
-    function renderGrid(list, containerId) {
-        const container = document.getElementById(containerId);
-        if(list.length === 0) {
-            container.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;">Ничего не найдено.</div>`;
-            return;
-        }
-
-        container.innerHTML = list.map(ad => {
-            const isFav = favorites.includes(ad.id);
-            const cleanPhone = ad.phone ? ad.phone.replace(/\D/g, '') : "77071234567";
-            const waText = encodeURIComponent(`Здравствуйте! Я по поводу объявления "${ad.title}" на BazarHub.`);
-            
-            return `
-                <div class="ad-card">
-                    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite(${ad.id}, event)">${isFav ? '♥' : '♡'}</button>
-                    <div class="img-box"><img src="${ad.img}" class="ad-img"></div>
-                    <div class="ad-body">
-                        <div class="ad-price">${ad.price}</div>
-                        <h4 class="ad-title">${ad.title}</h4>
-                        <div class="ad-meta"><span>📍 ${ad.location || 'Шу'}</span><span>${ad.date || 'Сегодня'}</span></div>
-                        <a href="https://wa.me/${cleanPhone}?text=${waText}" target="_blank" class="btn-wa">
-                            💬 WhatsApp
-                        </a>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    // СИСТЕМА ИЗБРАННОГО (СОХРАНЯЕТСЯ В LOCALSTORAGE СМАРТФОНА)
-    function toggleFavorite(id, event) {
-        event.stopPropagation();
-        if(favorites.includes(id)) {
-            favorites = favorites.filter(fId => fId !== id);
-        } else {
-            favorites.push(id);
-        }
-        localStorage.setItem('bhub_favorites', JSON.stringify(favorites));
-        filterAds();
-        if(document.getElementById('page-favs').classList.contains('active')) renderFavorites();
-    }
-
-    function renderFavorites() {
-        const favList = adsList.filter(ad => favorites.includes(ad.id));
-        renderGrid(favList, 'favsContainer');
-    }
-
-    // МОДАЛЬНОЕ ОКНО
-    function openModal() {
-        document.getElementById('adModal').style.display = 'flex';
-        const select = document.getElementById('formCat');
-        select.innerHTML = categories.filter(c => c !== "Все").map(c => `<option value="${c}">${c}</option>`).join('');
-    }
-
-    function closeModal() { document.getElementById('adModal').style.display = 'none'; }
-
-    // ОТПРАВКА НОВОГО ТОВАРА НА БЭКЕНД В TERMUX
-    async function submitAd(event) {
-        event.preventDefault();
-
-        const rawPrice = document.getElementById('formPrice').value;
-        const formattedPrice = parseInt(rawPrice).toLocaleString('ru-RU') + " ₸";
-
-        const newAd = {
-            id: Date.now(),
-            title: document.getElementById('formTitle').value,
-            category: document.getElementById('formCat').value,
-            sub: "Разное",
-            price: formattedPrice,
-            desc: document.getElementById('formDesc').value,
-            phone: document.getElementById('formPhone').value,
-            location: "Шу",
-            date: "Только что",
-            img: `https://picsum.photos/seed/${Date.now()}/400/300`
-        };
-
-        try {
-            const res = await fetch(SERVER_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newAd)
-            });
-
-            if(res.ok) {
-                closeModal();
-                document.getElementById('adForm').reset();
-                await loadData(); // Перезапрашиваем базу, чтобы увидеть обновление
-                switchPage('home');
-            }
-        } catch (e) {
-            alert("Ошибка при сохранении объявления на сервере");
+        if(title && price) {
+            ads.unshift({id: Date.now(), title, price: price + ' ₸', desc, phone: "77071234567", img: "https://picsum.photos/200/200?random="+Date.now()});
+            document.getElementById('modal').style.display = 'none';
+            render();
         }
     }
 
-    // ИНИЦИАЛИЗАЦИЯ ПРИ СТАРТЕ
-    buildCategoryChips();
-    loadData();
+    render(); // Запускаем отрисовку сразу при загрузке
 </script>
 </body>
 </html>
