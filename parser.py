@@ -19,3 +19,4 @@ for item in soup.select('[data-cy="l-card"]'):
 # Сохраняем в файл, который будет читать сайт
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(ads, f, ensure_ascii=False)
+print("Тест прошел").
