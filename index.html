@@ -270,7 +270,18 @@
 </div>
 
 <script>
-     // Данные для отображения
+     // // Используем локальные данные, пока не настроим Google Таблицы
+let adsList = [
+    {id: 101, title: "iPhone 13 Pro Max", price: "250 000 ₸", category: "Электроника", desc: "В идеальном состоянии, полный комплект.", phone: "77071234567", img: "https://picsum.photos/400/300"},
+    {id: 102, title: "Аренда авто в Шу", price: "15 000 ₸", category: "Транспорт", desc: "Сдам авто на сутки, есть кондиционер.", phone: "77071234567", img: "https://picsum.photos/400/301"},
+    {id: 103, title: "Услуги сантехника", price: "3 000 ₸", category: "Услуги", desc: "Ремонт труб, кранов, выезд в любую точку города.", phone: "77071234567", img: "https://picsum.photos/400/302"}
+];
+
+// Функция подмены, чтобы сайт думал, что данные пришли из сети
+async function loadData() {
+    filterAds();
+}
+ для отображения
 let adsList = [
     {id: 1, title: "iPhone 13 Pro Max", price: "250 000 ₸", category: "Электроника", desc: "В идеальном состоянии, полный комплект.", phone: "77071234567", img: "https://picsum.photos/400/300"},
     {id: 2, title: "Аренда авто", price: "15 000 ₸", category: "Транспорт", desc: "Сдам авто на сутки.", phone: "77071234567", img: "https://picsum.photos/400/301"},
