@@ -1,28 +1,11 @@
-import requests
-from bs4 import BeautifulSoup
-import json
-
-# Заголовки для имитации браузера
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
-}
-
-# Пример: парсим квартиры в аренду в Жамбылской области
-url = "https://krisha.kz/arenda/kvartiry/zhambylskaya-oblast/"
-response = requests.get(url, headers=headers)
-soup = BeautifulSoup(response.text, 'html.parser')
-
-ads = []
-# На Krisha.kz карточки обычно лежат в блоках с этим классом
-items = soup.select('.a-card')
-
-for item in items:
+# ... внутри цикла for item in items:
     try:
         title = item.select_one('.a-card__title').text.strip()
         price = item.select_one('.a-card__price').text.strip()
-        ads.append({"title": title, "price": price})
+        # Добавляем получение ссылки на фото
+        img_tag = item.select_one('img')
+        img_url = img_tag['data-src'] if img_tag and 'data-src' in img_tag.attrs else (img_tag['src'] if img_tag else "https://via.placeholder.com/200")
+        
+        ads.append({"title": title, "price": price, "img": img_url})
     except: continue
-
-# Сохраняем результат
-with open("data.json", "w", encoding="utf-8") as f:
-    json.dump(ads, f, ensure_ascii=False)
+# ...
