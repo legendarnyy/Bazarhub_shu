@@ -2,48 +2,68 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Bazarhub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BazarHub Шу — Доска объявлений</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* Твой старый стиль */
-        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f9; }
-        .ad-item { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h3 { margin-top: 0; color: #333; }
-        p { color: #e44d26; font-weight: bold; }
+        :root { --primary: #002f34; --accent: #00e0ff; --bg: #f2f4f5; --white: #ffffff; --whatsapp: #25d366; }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        body { background: var(--bg); padding-bottom: 70px; }
+        
+        header { background: var(--primary); padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800; }
+        .logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 18px; }
+        .btn-post { background: var(--accent); border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 13px; color: var(--primary); }
+
+        .nav-section { background: white; padding: 10px; border-bottom: 1px solid #ddd; }
+        .tabs { display: flex; gap: 10px; overflow-x: auto; }
+        .tab { padding: 6px 14px; border-radius: 20px; background: #eee; font-size: 12px; cursor: pointer; white-space: nowrap; }
+        .tab.active { background: var(--primary); color: white; }
+
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 15px; }
+        .ad-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .ad-img { width: 100%; height: 100px; background: #eee; border-radius: 8px; object-fit: cover; }
+        .btn-wa { display: block; background: var(--whatsapp); color: white; text-align: center; padding: 8px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: 800; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <h1>Актуальные объявления</h1>
-    
-    <!-- Контейнер для объявлений -->
-    <div id="ads-container">Загрузка объявлений...</div>
+<header>
+    <div class="logo"><div class="logo-icon">B</div> Bazar<span>Hub</span></div>
+    <button class="btn-post">+ Подать</button>
+</header>
 
-    <script>
-        // Скрипт для подгрузки новых данных из data.json
-        async function updateUI() {
-            try {
-                const response = await fetch('data.json');
-                const ads = await response.json();
-                
-                const container = document.getElementById('ads-container');
-                container.innerHTML = ''; 
-                
-                ads.forEach(ad => {
-                    const div = document.createElement('div');
-                    div.className = 'ad-item';
-                    div.innerHTML = `
-                        <h3>${ad.title}</h3>
-                        <p>${ad.price}</p>
-                    `;
-                    container.appendChild(div);
-                });
-            } catch (e) {
-                console.error("Ошибка:", e);
-                document.getElementById('ads-container').innerText = "Данные пока загружаются или файл пуст.";
-            }
+<div class="nav-section">
+    <div class="tabs" id="categoryNav"></div>
+</div>
+
+<div class="ads-grid" id="adsContainer">Загрузка объявлений...</div>
+
+<script>
+    // Загрузка данных из data.json
+    async function loadAds() {
+        try {
+            const response = await fetch('data.json');
+            const ads = await response.json();
+            render(ads);
+        } catch (e) {
+            document.getElementById('adsContainer').innerHTML = "Данные обновляются, загляните через минуту!";
         }
+    }
 
-        updateUI();
-    </script>
+    function render(ads) {
+        const container = document.getElementById('adsContainer');
+        container.innerHTML = ads.map(ad => `
+            <div class="ad-card">
+                <img src="https://picsum.photos/200?random=${Math.random()}" class="ad-img">
+                <h4 style="font-size:13px; margin:8px 0;">${ad.title}</h4>
+                <p style="color:red; font-weight:800;">${ad.price}</p>
+                <a href="#" class="btn-wa">WhatsApp</a>
+            </div>
+        `).join('');
+    }
+
+    loadAds();
+</script>
 </body>
 </html>
