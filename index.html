@@ -2,61 +2,48 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bazarhub Shu - Маркетплейс</title>
+    <title>Bazarhub</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
-        header { background: #1a73e8; color: white; padding: 20px; text-align: center; }
-        .search-box { padding: 20px; text-align: center; }
-        #search { padding: 10px; width: 80%; max-width: 400px; border-radius: 20px; border: 1px solid #ccc; }
-        .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
-        .ad-item { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .price { color: #d93025; font-weight: bold; font-size: 1.1em; }
+        /* Твой старый стиль */
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .ad-item { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h3 { margin-top: 0; color: #333; }
+        p { color: #e44d26; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>BazarHub Shu</h1>
-    </header>
-
-    <div class="search-box">
-        <input type="text" id="search" placeholder="Поиск объявлений...">
-    </div>
-
-    <div class="container" id="ads-container">Загрузка объявлений...</div>
+    <h1>Актуальные объявления</h1>
+    
+    <!-- Контейнер для объявлений -->
+    <div id="ads-container">Загрузка объявлений...</div>
 
     <script>
-        let allAds = [];
-
-        async function loadAds() {
+        // Скрипт для подгрузки новых данных из data.json
+        async function updateUI() {
             try {
                 const response = await fetch('data.json');
-                allAds = await response.json();
-                renderAds(allAds);
+                const ads = await response.json();
+                
+                const container = document.getElementById('ads-container');
+                container.innerHTML = ''; 
+                
+                ads.forEach(ad => {
+                    const div = document.createElement('div');
+                    div.className = 'ad-item';
+                    div.innerHTML = `
+                        <h3>${ad.title}</h3>
+                        <p>${ad.price}</p>
+                    `;
+                    container.appendChild(div);
+                });
             } catch (e) {
-                document.getElementById('ads-container').innerText = "Ошибка загрузки.";
+                console.error("Ошибка:", e);
+                document.getElementById('ads-container').innerText = "Данные пока загружаются или файл пуст.";
             }
         }
 
-        function renderAds(ads) {
-            const container = document.getElementById('ads-container');
-            container.innerHTML = '';
-            ads.forEach(ad => {
-                const div = document.createElement('div');
-                div.className = 'ad-item';
-                div.innerHTML = `<h3>${ad.title}</h3><p class="price">${ad.price}</p>`;
-                container.appendChild(div);
-            });
-        }
-
-        document.getElementById('search').addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            const filtered = allAds.filter(ad => ad.title.toLowerCase().includes(val));
-            renderAds(filtered);
-        });
-
-        loadAds();
+        updateUI();
     </script>
 </body>
 </html>
