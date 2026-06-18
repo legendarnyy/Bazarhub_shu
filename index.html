@@ -3,47 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BazarHub Шу</title>
+    <title>BazarHub Шу — Доска объявлений</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #002f34; --bg: #f2f4f5; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 20px; }
-        header { background: var(--primary); padding: 20px; color: white; text-align: center; font-weight: bold; }
-        .ads-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
-        .ad-card { background: white; padding: 8px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .ad-img { width: 100%; height: 120px; border-radius: 6px; object-fit: cover; background: #ddd; }
-        h4 { font-size: 14px; margin: 8px 0; height: 35px; overflow: hidden; }
-        .price { color: #d93025; font-weight: bold; font-size: 15px; }
+        :root { --primary: #002f34; --accent: #00e0ff; --bg: #f2f4f5; }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        body { background: var(--bg); padding-bottom: 80px; }
+        
+        /* HEADER */
+        header { background: var(--primary); padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 800; }
+        .btn-post { background: var(--accent); border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; cursor: pointer; }
+
+        /* CONTENT */
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 15px; }
+        .ad-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .ad-img { width: 100%; height: 100px; background: #eee; border-radius: 8px; object-fit: cover; }
+        
+        /* NAVIGATION */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #ddd; }
+        .nav-item { cursor: pointer; text-align: center; font-size: 12px; }
     </style>
 </head>
 <body>
 
-<header>BazarHub Шу</header>
+<header>
+    <div class="logo">BazarHub Шу</div>
+    <button class="btn-post" onclick="showModal()">+ Подать</button>
+</header>
 
-<div class="ads-grid" id="adsContainer">Загрузка данных...</div>
+<div class="ads-grid" id="adsContainer">Загрузка объявлений...</div>
+
+<div class="bottom-nav">
+    <div class="nav-item" onclick="alert('Главная')">🏠 Лента</div>
+    <div class="nav-item" onclick="alert('Личный кабинет: доступно при подключении базы данных')">👤 Кабинет</div>
+    <div class="nav-item" onclick="alert('Поддержка: bazarhub@mail.ru')">📞 Помощь</div>
+</div>
+
+<div id="modal" style="display:none; position:fixed; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:white; padding:20px; width:90%; border-radius:15px;">
+        <h3>Подать объявление</h3>
+        <input type="text" id="title" placeholder="Название" style="width:100%; padding:10px; margin:10px 0;">
+        <input type="text" id="price" placeholder="Цена" style="width:100%; padding:10px; margin:10px 0;">
+        <button onclick="saveAd()" style="width:100%; padding:10px; background:var(--primary); color:white; border:none;">Опубликовать</button>
+    </div>
+</div>
 
 <script>
     async function loadAds() {
         try {
-            const response = await fetch('data.json');
-            const ads = await response.json();
+            const res = await fetch('data.json');
+            const data = await res.json();
             const container = document.getElementById('adsContainer');
-            
-            if (ads.length === 0) {
-                container.innerHTML = "Объявлений пока нет.";
-                return;
-            }
-
-            container.innerHTML = ads.map(ad => `
+            container.innerHTML = data.map(ad => `
                 <div class="ad-card">
-                    <img src="${ad.img}" class="ad-img" onerror="this.src='https://via.placeholder.com/200'">
+                    <img src="${ad.img}" class="ad-img" onerror="this.src='https://via.placeholder.com/150'">
                     <h4>${ad.title}</h4>
-                    <p class="price">${ad.price}</p>
+                    <p style="color:red; font-weight:bold;">${ad.price}</p>
                 </div>
             `).join('');
         } catch (e) {
-            document.getElementById('adsContainer').innerHTML = "Ошибка загрузки данных.";
+            document.getElementById('adsContainer').innerHTML = "Ошибка загрузки";
         }
     }
+    
+    function showModal() { document.getElementById('modal').style.display = 'flex'; }
+    function saveAd() { alert('Объявление принято на модерацию!'); document.getElementById('modal').style.display = 'none'; }
+    
     loadAds();
 </script>
 </body>
